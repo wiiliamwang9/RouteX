@@ -1,0 +1,229 @@
+groups:
+  - name: routex_trading_alerts
+    rules:
+      # High frequency trading alerts
+      - alert: HighTradeFailureRate
+        expr: rate(routex_trades_failed_total[5m]) / rate(routex_trades_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: trading
+        annotations:
+          summary: "High trade failure rate detected"
+          description: "Trade failure rate is {{ $value | humanizePercentage }} over the last 5 minutes"
+
+      - alert: ExtremeSlippage
+        expr: routex_trade_slippage_percent > 5
+        for: 1m
+        labels:
+          severity: critical
+          service: trading
+        annotations:
+          summary: "Extreme slippage detected"
+          description: "Trade slippage of {{ $value }}% exceeds 5% threshold"
+
+      - alert: GasPriceSpike
+        expr: routex_gas_price_gwei > 500
+        for: 3m
+        labels:
+          severity: warning
+          service: trading
+        annotations:
+          summary: "Gas price spike detected"
+          description: "Current gas price {{ $value }} gwei exceeds normal threshold"
+
+      - alert: StrategyPnLDrop
+        expr: routex_strategy_pnl_percent < -10
+        for: 5m
+        labels:
+          severity: critical
+          service: strategy
+        annotations:
+          summary: "Strategy PnL dropped significantly"
+          description: "Strategy {{ $labels.strategy_id }} PnL dropped to {{ $value }}%"
+
+  - name: routex_system_alerts
+    rules:
+      # API performance alerts
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 3m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High API latency"
+          description: "95th percentile latency is {{ $value }}s"
+
+      - alert: APIErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "High API error rate"
+          description: "API error rate is {{ $value | humanizePercentage }}"
+
+      # System resource alerts
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is {{ $value | humanizePercentage }} full"
+
+  - name: routex_blockchain_alerts
+    rules:
+      # Blockchain connectivity alerts
+      - alert: BlockchainConnectionLost
+        expr: routex_blockchain_connected == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: blockchain
+        annotations:
+          summary: "Blockchain connection lost"
+          description: "Connection to blockchain network {{ $labels.network }} is down"
+
+      - alert: BlockDelay
+        expr: time() - routex_latest_block_timestamp > 300
+        for: 2m
+        labels:
+          severity: warning
+          service: blockchain
+        annotations:
+          summary: "Block delay detected"
+          description: "Latest block is {{ $value }}s old"
+
+      - alert: TransactionStuck
+        expr: routex_pending_transaction_age_seconds > 3600
+        for: 5m
+        labels:
+          severity: warning
+          service: blockchain
+        annotations:
+          summary: "Transaction stuck in mempool"
+          description: "Transaction {{ $labels.tx_hash }} has been pending for {{ $value }}s"
+
+  - name: routex_ai_alerts
+    rules:
+      # AI service alerts
+      - alert: AIServiceDown
+        expr: up{job="routex-ai"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: ai
+        annotations:
+          summary: "AI service is down"
+          description: "AI optimization service is not responding"
+
+      - alert: LowAIConfidence
+        expr: routex_ai_confidence_score < 0.6
+        for: 5m
+        labels:
+          severity: warning
+          service: ai
+        annotations:
+          summary: "Low AI confidence scores"
+          description: "AI confidence score {{ $value }} is below 60%"
+
+      - alert: ModelPerformanceDrop
+        expr: routex_ai_model_accuracy < 0.7
+        for: 10m
+        labels:
+          severity: warning
+          service: ai
+        annotations:
+          summary: "AI model performance degraded"
+          description: "Model {{ $labels.model_name }} accuracy dropped to {{ $value }}"
+
+  - name: routex_crosschain_alerts
+    rules:
+      # Cross-chain bridge alerts
+      - alert: BridgeDown
+        expr: routex_bridge_status == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: crosschain
+        annotations:
+          summary: "Cross-chain bridge is down"
+          description: "Bridge {{ $labels.bridge_name }} between chains {{ $labels.src_chain }} and {{ $labels.dst_chain }} is down"
+
+      - alert: HighBridgeFees
+        expr: routex_bridge_fee_percent > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: crosschain
+        annotations:
+          summary: "High bridge fees"
+          description: "Bridge fees for {{ $labels.bridge_name }} are {{ $value }}%"
+
+      - alert: BridgeDelayHigh
+        expr: routex_bridge_delay_minutes > 30
+        for: 10m
+        labels:
+          severity: warning
+          service: crosschain
+        annotations:
+          summary: "High bridge delays"
+          description: "Bridge {{ $labels.bridge_name }} delays are {{ $value }} minutes"
+
+  - name: routex_mev_alerts
+    rules:
+      # MEV protection alerts
+      - alert: MEVAttackDetected
+        expr: increase(routex_mev_attacks_detected_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: critical
+          service: mev_protection
+        annotations:
+          summary: "MEV attack detected"
+          description: "{{ $value }} MEV attacks detected in the last 5 minutes"
+
+      - alert: SandwichAttackPrevented
+        expr: increase(routex_sandwich_attacks_prevented_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: info
+          service: mev_protection
+        annotations:
+          summary: "Sandwich attacks prevented"
+          description: "{{ $value }} sandwich attacks prevented in the last 5 minutes"
+
+      - alert: FrontrunningDetected
+        expr: increase(routex_frontrunning_detected_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: warning
+          service: mev_protection
+        annotations:
+          summary: "Frontrunning detected"
+          description: "{{ $value }} frontrunning attempts detected in the last 5 minutes"

@@ -1,0 +1,1365 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_traderAgent",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_routerDefense",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_crossChainRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_aiOptimizer",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "EmergencyStop",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "totalTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "successfulTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalPnL",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalVolume",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxDrawdown",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sharpeRatio",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "avgTradeSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastUpdateTime",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct QuantGuardPro.PerformanceMetrics",
+        "name": "metrics",
+        "type": "tuple"
+      }
+    ],
+    "name": "PerformanceUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "riskType",
+        "type": "string"
+      }
+    ],
+    "name": "RiskLimitTriggered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum QuantGuardPro.StrategyType",
+        "name": "strategyType",
+        "type": "uint8"
+      }
+    ],
+    "name": "StrategyCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "gasUsed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "pnl",
+        "type": "int256"
+      }
+    ],
+    "name": "StrategyExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "StrategyPaused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "StrategyResumed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "MANAGEMENT_FEE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_STRATEGIES_PER_USER",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PERFORMANCE_FEE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "activateStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "aiOptimizer",
+    "outputs": [
+      {
+        "internalType": "contract IAIStrategyOptimizer",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "authorizedExecutors",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "enum QuantGuardPro.StrategyType",
+        "name": "strategyType",
+        "type": "uint8"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxPositionSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSlippage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxGasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rebalanceInterval",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "stopLossThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "takeProfitThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "allowedTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "allocations",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableCrossChain",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableMEVProtection",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.StrategyConfig",
+        "name": "config",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxDailyLoss",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxPositionConcentration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "volatilityThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidityThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableEmergencyStop",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.RiskParameters",
+        "name": "riskParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "createStrategy",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "crossChainRouter",
+    "outputs": [
+      {
+        "internalType": "contract ICrossChainRouter",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "emergencyStopStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "executeStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStrategyDetails",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "enum QuantGuardPro.StrategyType",
+            "name": "strategyType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum QuantGuardPro.StrategyStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "maxPositionSize",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "maxSlippage",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "maxGasPrice",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "rebalanceInterval",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "stopLossThreshold",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "takeProfitThreshold",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "allowedTokens",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint256[]",
+                "name": "allocations",
+                "type": "uint256[]"
+              },
+              {
+                "internalType": "bool",
+                "name": "enableCrossChain",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "enableMEVProtection",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct QuantGuardPro.StrategyConfig",
+            "name": "config",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "totalTrades",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "successfulTrades",
+                "type": "uint256"
+              },
+              {
+                "internalType": "int256",
+                "name": "totalPnL",
+                "type": "int256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalVolume",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "maxDrawdown",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "sharpeRatio",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "avgTradeSize",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "lastUpdateTime",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct QuantGuardPro.PerformanceMetrics",
+            "name": "performance",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastExecuted",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.QuantStrategy",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStrategyPerformance",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "totalTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "successfulTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalPnL",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalVolume",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxDrawdown",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sharpeRatio",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "avgTradeSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastUpdateTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.PerformanceMetrics",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserStrategies",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nextStrategyId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "pauseStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "resumeStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "routerDefense",
+    "outputs": [
+      {
+        "internalType": "contract IRouterDefense",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "authorized",
+        "type": "bool"
+      }
+    ],
+    "name": "setAuthorizedExecutor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum QuantGuardPro.StrategyType",
+        "name": "strategyType",
+        "type": "uint8"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxPositionSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSlippage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxGasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rebalanceInterval",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "stopLossThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "takeProfitThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "allowedTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "allocations",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableCrossChain",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableMEVProtection",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.StrategyConfig",
+        "name": "config",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "simulationPeriod",
+        "type": "uint256"
+      }
+    ],
+    "name": "simulateStrategy",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "totalTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "successfulTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalPnL",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalVolume",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxDrawdown",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sharpeRatio",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "avgTradeSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastUpdateTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.PerformanceMetrics",
+        "name": "simulatedPerformance",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "strategies",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "enum QuantGuardPro.StrategyType",
+        "name": "strategyType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum QuantGuardPro.StrategyStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxPositionSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSlippage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxGasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rebalanceInterval",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "stopLossThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "takeProfitThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "allowedTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "allocations",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableCrossChain",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableMEVProtection",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.StrategyConfig",
+        "name": "config",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "totalTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "successfulTrades",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int256",
+            "name": "totalPnL",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalVolume",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxDrawdown",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sharpeRatio",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "avgTradeSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastUpdateTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.PerformanceMetrics",
+        "name": "performance",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastExecuted",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "strategyRisks",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "maxDailyLoss",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxPositionConcentration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "volatilityThreshold",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "liquidityThreshold",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "enableEmergencyStop",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "traderAgent",
+    "outputs": [
+      {
+        "internalType": "contract ITraderAgent",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_traderAgent",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_routerDefense",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_crossChainRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_aiOptimizer",
+        "type": "address"
+      }
+    ],
+    "name": "updateCoreComponents",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxDailyLoss",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxPositionConcentration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "volatilityThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidityThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableEmergencyStop",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.RiskParameters",
+        "name": "newRiskParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateRiskParameters",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "strategyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "maxPositionSize",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSlippage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxGasPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rebalanceInterval",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "stopLossThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "takeProfitThreshold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "allowedTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "allocations",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableCrossChain",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "enableMEVProtection",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct QuantGuardPro.StrategyConfig",
+        "name": "newConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateStrategyConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userStrategies",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

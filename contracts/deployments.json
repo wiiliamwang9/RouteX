@@ -1,0 +1,19 @@
+{
+  "network": "monad_testnet",
+  "chainId": 10143,
+  "deployer": "0xA42910326cAEe0A06616063500De7dCd46e7B2E8",
+  "timestamp": "2025-09-20T05:45:52.194Z",
+  "contracts": {
+    "TraderAgent": "0x7267749E1Fa24Cae44e1B76Ec90F3B2f98D2C290",
+    "RouterDefense": "0x458Ec2Bc6E645ccd8f98599D6E4d942ea480ca16",
+    "CrossChainRouter": "0x22A8C0BD01f88D3461c98E9bc3399A83dDBB9Cee",
+    "AIStrategyOptimizer": "0xc6aF426FC11BFb6d46ffaB9A57c30ab5437AA09C",
+    "QuantGuardPro": "0xb10a0b0f6282024D5c3b5256CB312D06177cF4ab"
+  },
+  "external": {
+    "uniswapRouter": "0x4c4eABd5Fb1D1A7234A48692551eAECFF8194CA7",
+    "weth": "0xB5a30b0FDc5EA94A52fDc42e3E9760Cb8449Fb37",
+    "usdc": "0xf817257fed379853cDe0fa4F97AB987181B1E5Ea",
+    "dai": "0xA3dbBD3887228aE84f08bE839f9e20485759a004"
+  }
+}

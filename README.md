@@ -1,49 +1,48 @@
-# RouteX
-hackson monad
+# RouteX - Enterprise Quantitative Trading Infrastructure
 
-—— 基于 Monad 的攻防一体量化基础设施：为量化交易者提供高频下单工具，同时为普通用户提供流动性路由与 MEV 防护。
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)](package.json)
+[![Monad](https://img.shields.io/badge/Blockchain-Monad-purple.svg)](https://monad.xyz)
 
-🌟 项目亮点
+> **🚀 Advanced quantitative trading infrastructure with AI-powered strategy optimization, MEV protection, and cross-chain routing capabilities for professional trading teams.**
 
-攻防一体：既能满足专业量化交易的高速下单需求，又能为普通用户提供交易防护。
+## 🌟 Project Highlights
 
-高性能：依托 Monad 的并行执行和低延迟，支持毫秒级下单和复杂多路径路由。
+**🛡️ Attack & Defense Integration**: Serves both professional quantitative traders with high-frequency trading tools and protects ordinary users with intelligent routing and MEV defense.
 
-MEV 防护：内置批量撮合（Batch Execution）与 commit-reveal 机制，减少抢跑和三明治攻击。
+**⚡ High Performance**: Leverages Monad's parallel execution and low latency for millisecond-level order execution and complex multi-path routing.
 
-轻量架构：无需后端，仅依赖前端 + 合约，部署简洁、易扩展。
+**🔒 MEV Protection**: Built-in batch execution and commit-reveal mechanisms to reduce frontrunning and sandwich attacks.
 
-⚙️ 技术实现
+**🔧 Lightweight Architecture**: Clean deployment with frontend + contracts only, no backend dependency required.
 
-前端
+## 🏗️ Enhanced Architecture
 
-React + Web3 库
+### Core Infrastructure
+- **📈 Smart Contracts**: Advanced Solidity contracts on Monad
+  - `TraderAgent`: High-frequency trading execution engine
+  - `RouterDefense`: MEV protection and intelligent routing
+  - `CrossChainRouter`: Multi-chain bridge management
+  - `AIStrategyOptimizer`: On-chain AI recommendations
+  - `QuantGuardPro`: Complete strategy lifecycle management
 
-高频下单界面：支持限价、市价、批量下单
+### API & SDK Layer
+- **🔌 RESTful APIs**: Enterprise-grade HTTP endpoints
+- **⚡ WebSocket Streams**: Real-time market data and trade updates
+- **📚 Multi-language SDKs**: TypeScript, Python, Go support
+- **🛡️ Authentication**: API key management and rate limiting
 
-Swap 界面：展示最优路径与滑点信息
+### AI & Analytics
+- **🤖 AI Strategy Optimization**: Machine learning for route selection
+- **📊 Advanced Analytics**: Real-time performance monitoring
+- **⚠️ Risk Assessment**: Automated risk scoring and alerts
+- **📈 Predictive Models**: Market volatility and timing optimization
 
-合约层（Solidity on Monad）
-
-TraderAgent 合约：代理量化交易下单/撤单，支持批量调用
-
-RouterDefense 合约：多路径路由计算 + 拆单执行
-
-防护机制：commit-reveal 隐私提交 + Batch Execution
-
-数据获取
-
-直接调用 Monad 节点 RPC，无需独立后端
-
-🚀 未来规划
-
-AI 路由优化：链下 AI 引擎学习流动性池深度变化，提供预测型最优路径。
-
-跨链扩展：支持多链流动性聚合，将 Monad 打造成高性能结算层。
-
-MEV 拍卖机制：集成公平排序 / PBS / 拍卖机制，让用户选择是否出价抵抗 MEV。
-
-协议级接入：作为其他 DeFi 协议的底层路由和防护模块。
+### Monitoring & Operations
+- **📈 Prometheus**: Comprehensive metrics collection
+- **📊 Grafana**: Professional trading dashboards
+- **🔍 Elasticsearch**: Advanced log analysis
+- **🚨 AlertManager**: Intelligent threat detection
 
 ---
 
