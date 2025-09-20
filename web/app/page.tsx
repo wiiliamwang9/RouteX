@@ -13,6 +13,7 @@ import { MarketOverview } from "@/components/market-overview"
 import { LiquidityPools } from "@/components/liquidity-pools"
 import { NetworkStatus } from "@/components/network-status"
 import { PriceDisplay } from "@/components/price-display"
+import { QuantStrategyDashboard } from "@/components/quant-strategy-dashboard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   LayoutDashboard,
@@ -22,6 +23,7 @@ import {
   Bell,
   AreaChart,
   DollarSign,
+  Target,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -78,6 +80,10 @@ export default function HomePage() {
               <TabsTrigger value="protection" className={triggerClasses}>
                 <Shield className="h-4 w-4" />
                 Protection
+              </TabsTrigger>
+              <TabsTrigger value="quant" className={triggerClasses}>
+                <Target className="h-4 w-4" />
+                Quant
               </TabsTrigger>
             </TabsList>
           </div>
@@ -225,6 +231,12 @@ export default function HomePage() {
         <TabsContent value="protection" className="flex-1 p-6">
           <div className="h-full">
             <ProtectionDashboard />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="quant" className="flex-1 p-6">
+          <div className="h-full">
+            <QuantStrategyDashboard />
           </div>
         </TabsContent>
 
