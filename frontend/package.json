@@ -4,9 +4,9 @@
   "description": "RouteX Frontend - Advanced Quantitative Trading Interface",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 9000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 9000",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "test": "jest",
