@@ -12,6 +12,8 @@ import { ProtectionDashboard } from "@/components/protection-dashboard"
 import { MarketOverview } from "@/components/market-overview"
 import { LiquidityPools } from "@/components/liquidity-pools"
 import { NetworkStatus } from "@/components/network-status"
+import { PriceDisplay } from "@/components/price-display"
+import { TestingDashboard } from "@/components/testing-dashboard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   LayoutDashboard,
@@ -20,6 +22,8 @@ import {
   Shield,
   Bell,
   AreaChart,
+  DollarSign,
+  TestTube,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -61,6 +65,10 @@ export default function HomePage() {
                 <TrendingUp className="h-4 w-4" />
                 Swap
               </TabsTrigger>
+              <TabsTrigger value="prices" className={triggerClasses}>
+                <DollarSign className="h-4 w-4" />
+                Prices
+              </TabsTrigger>
               <TabsTrigger value="orders" className={triggerClasses}>
                 <BarChart3 className="h-4 w-4" />
                 Orders
@@ -72,6 +80,10 @@ export default function HomePage() {
               <TabsTrigger value="protection" className={triggerClasses}>
                 <Shield className="h-4 w-4" />
                 Protection
+              </TabsTrigger>
+              <TabsTrigger value="testing" className={triggerClasses}>
+                <TestTube className="h-4 w-4" />
+                Testing
               </TabsTrigger>
             </TabsList>
           </div>
@@ -199,6 +211,10 @@ export default function HomePage() {
           </div>
         </TabsContent>
 
+        <TabsContent value="prices">
+          <PriceDisplay />
+        </TabsContent>
+
         <TabsContent value="orders" className="flex-1 p-6">
           <div className="grid lg:grid-cols-2 gap-6 h-full">
             <OrderForm />
@@ -216,6 +232,10 @@ export default function HomePage() {
           <div className="h-full">
             <ProtectionDashboard />
           </div>
+        </TabsContent>
+
+        <TabsContent value="testing">
+          <TestingDashboard />
         </TabsContent>
       </main>
     </Tabs>

@@ -663,42 +663,5 @@ export function useMultiTokenBalances(userAddress?: string) {
 }
 
 // ============================================================================
-// 导出所有 Hooks
+// 所有 Hooks 已通过单独的 export 语句导出
 // ============================================================================
-
-export {
-  // TraderAgent
-  useExecuteOrder,
-  usePlaceLimitOrder,
-  useUserOrders,
-  
-  // RouterDefense
-  useProtectedSwap,
-  useOptimalRoute,
-  
-  // AI Strategy Optimizer
-  useAIRouteOptimization,
-  useAIRiskAssessment,
-  
-  // QuantGuard Pro
-  useCreateStrategy,
-  useExecuteStrategy,
-  useStrategyPerformance,
-  
-  // CrossChain Router
-  useCrossChainSwap,
-  useOptimalBridge,
-  
-  // ERC20 代币
-  useTokenBalance,
-  useTokenApproval,
-  useTokenInfo,
-  
-  // 高级组合
-  useTradePreparation,
-  useMultiTokenBalances,
-  
-  // 工具
-  useTransactionMonitor,
-  useSmartTrading,
-}
