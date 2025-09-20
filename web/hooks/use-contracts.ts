@@ -8,7 +8,9 @@ import {
   TRADER_AGENT_ABI, 
   ROUTER_DEFENSE_ABI, 
   AI_STRATEGY_OPTIMIZER_ABI,
-  QUANTGUARD_PRO_ABI 
+  QUANTGUARD_PRO_ABI,
+  CROSSCHAIN_ROUTER_ABI,
+  ERC20_ABI 
 } from '@/lib/contract-abis'
 
 // ============================================================================
@@ -434,6 +436,233 @@ export function useSmartTrading() {
 }
 
 // ============================================================================
+// CrossChain Router 合约 Hooks
+// ============================================================================
+
+/**
+ * 发起跨链交换
+ */
+export function useCrossChainSwap() {
+  const { write: initiateCrossChainSwap, data: txData } = useContractWrite({
+    address: CONTRACT_ADDRESSES.CROSSCHAIN_ROUTER,
+    abi: CROSSCHAIN_ROUTER_ABI,
+    functionName: 'initiateCrossChainSwap',
+  })
+
+  const handleCrossChainSwap = useCallback(async (
+    targetChainId: number,
+    tokenIn: string,
+    tokenOut: string,
+    amountIn: bigint,
+    recipient: string,
+    bridgeData: string = '0x'
+  ) => {
+    try {
+      await initiateCrossChainSwap({
+        args: [BigInt(targetChainId), tokenIn, tokenOut, amountIn, recipient, bridgeData],
+        value: parseUnits('0.01', 18), // 桥接费用
+      })
+    } catch (error) {
+      console.error('跨链交易失败:', error)
+      throw error
+    }
+  }, [initiateCrossChainSwap])
+
+  return { 
+    initiateCrossChainSwap: handleCrossChainSwap, 
+    txHash: txData?.hash 
+  }
+}
+
+/**
+ * 获取最优桥接
+ */
+export function useOptimalBridge(
+  targetChainId?: number,
+  token?: string,
+  amount?: bigint
+) {
+  const { data: bridgeData, isLoading } = useContractRead({
+    address: CONTRACT_ADDRESSES.CROSSCHAIN_ROUTER,
+    abi: CROSSCHAIN_ROUTER_ABI,
+    functionName: 'getOptimalBridge',
+    args: [BigInt(targetChainId || 0), token, amount],
+    enabled: !!(targetChainId && token && amount),
+  })
+
+  return {
+    bridgeType: bridgeData?.[0] || 0,
+    estimatedTime: bridgeData?.[1] || 0n,
+    bridgeFee: bridgeData?.[2] || 0n,
+    isLoading,
+  }
+}
+
+// ============================================================================
+// ERC20 代币 Hooks
+// ============================================================================
+
+/**
+ * 获取代币余额
+ */
+export function useTokenBalance(tokenAddress?: string, userAddress?: string) {
+  const { data: balance, isLoading, refetch } = useContractRead({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'balanceOf',
+    args: [userAddress],
+    enabled: !!(tokenAddress && userAddress),
+    watch: true,
+  })
+
+  return {
+    balance: balance || 0n,
+    balanceFormatted: balance ? formatTokenAmount(balance, 18, 6) : '0',
+    isLoading,
+    refetch,
+  }
+}
+
+/**
+ * 代币授权
+ */
+export function useTokenApproval(tokenAddress?: string, spenderAddress?: string) {
+  const { write: approve, data: txData } = useContractWrite({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'approve',
+  })
+
+  const { data: allowance } = useContractRead({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: [spenderAddress, spenderAddress], // [owner, spender]
+    enabled: !!(tokenAddress && spenderAddress),
+  })
+
+  const handleApprove = useCallback(async (amount: bigint) => {
+    try {
+      await approve({
+        args: [spenderAddress, amount]
+      })
+    } catch (error) {
+      console.error('代币授权失败:', error)
+      throw error
+    }
+  }, [approve, spenderAddress])
+
+  return {
+    approve: handleApprove,
+    allowance: allowance || 0n,
+    txHash: txData?.hash,
+    isApproved: allowance && allowance > 0n,
+  }
+}
+
+/**
+ * 获取代币信息
+ */
+export function useTokenInfo(tokenAddress?: string) {
+  const { data: name } = useContractRead({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'name',
+    enabled: !!tokenAddress,
+  })
+
+  const { data: symbol } = useContractRead({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'symbol',
+    enabled: !!tokenAddress,
+  })
+
+  const { data: decimals } = useContractRead({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'decimals',
+    enabled: !!tokenAddress,
+  })
+
+  return {
+    name: name || '',
+    symbol: symbol || '',
+    decimals: decimals || 18,
+  }
+}
+
+// ============================================================================
+// 高级组合 Hooks
+// ============================================================================
+
+/**
+ * 完整的交易准备Hook (包括授权检查)
+ */
+export function useTradePreparation(
+  tokenInAddress?: string,
+  tokenOutAddress?: string,
+  amountIn?: bigint,
+  userAddress?: string
+) {
+  const { balance: tokenInBalance } = useTokenBalance(tokenInAddress, userAddress)
+  const { 
+    allowance, 
+    approve, 
+    isApproved 
+  } = useTokenApproval(tokenInAddress, CONTRACT_ADDRESSES.TRADER_AGENT)
+  
+  const { optimizedPath } = useAIRouteOptimization(
+    tokenInAddress,
+    tokenOutAddress, 
+    amountIn
+  )
+
+  const { riskLevel } = useAIRiskAssessment(
+    tokenInAddress,
+    tokenOutAddress,
+    amountIn
+  )
+
+  const isReady = !!(
+    tokenInAddress &&
+    tokenOutAddress && 
+    amountIn &&
+    userAddress &&
+    tokenInBalance >= amountIn &&
+    (isApproved || allowance >= amountIn) &&
+    riskLevel !== '高'
+  )
+
+  return {
+    isReady,
+    needsApproval: !isApproved && allowance < (amountIn || 0n),
+    insufficientBalance: tokenInBalance < (amountIn || 0n),
+    highRisk: riskLevel === '高',
+    optimizedPath,
+    riskLevel,
+    approve,
+  }
+}
+
+/**
+ * 多代币余额查询
+ */
+export function useMultiTokenBalances(userAddress?: string) {
+  const tokenBalances = SUPPORTED_TOKENS.map(token => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { balance, balanceFormatted } = useTokenBalance(token.address, userAddress)
+    return {
+      ...token,
+      balance,
+      balanceFormatted,
+    }
+  })
+
+  return { tokenBalances }
+}
+
+// ============================================================================
 // 导出所有 Hooks
 // ============================================================================
 
@@ -455,6 +684,19 @@ export {
   useCreateStrategy,
   useExecuteStrategy,
   useStrategyPerformance,
+  
+  // CrossChain Router
+  useCrossChainSwap,
+  useOptimalBridge,
+  
+  // ERC20 代币
+  useTokenBalance,
+  useTokenApproval,
+  useTokenInfo,
+  
+  // 高级组合
+  useTradePreparation,
+  useMultiTokenBalances,
   
   // 工具
   useTransactionMonitor,

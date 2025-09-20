@@ -161,7 +161,7 @@ export function BasicTrading() {
         <div className="mt-4 p-3 bg-blue-50 rounded">
           <p className="text-sm font-medium">交易状态: {status}</p>
           <a
-            href={`https://explorer.monad.xyz/tx/${txHash}`}
+            href={`https://testnet.monadexplorer.com/tx/${txHash}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline text-sm"
@@ -334,7 +334,7 @@ export function StrategyManager() {
             {createTxHash && '策略创建交易: '}
             {executeTxHash && '策略执行交易: '}
             <a
-              href={`https://explorer.monad.xyz/tx/${createTxHash || executeTxHash}`}
+              href={`https://testnet.monadexplorer.com/tx/${createTxHash || executeTxHash}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
@@ -522,7 +522,7 @@ export function OrderManager() {
           <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
             交易已提交: 
             <a
-              href={`https://explorer.monad.xyz/tx/${txHash}`}
+              href={`https://testnet.monadexplorer.com/tx/${txHash}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline ml-1"

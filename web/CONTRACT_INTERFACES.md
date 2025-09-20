@@ -11,13 +11,13 @@
 export const MONAD_TESTNET_CONFIG = {
   chainId: 10143,
   chainName: "Monad Testnet",
-  rpcUrl: "https://testnet-rpc.monad.xyz",
+  rpcUrl: "https://testnet-rpc.monad.xyz/",
   nativeCurrency: {
     name: "MON",
     symbol: "MON", 
     decimals: 18,
   },
-  blockExplorerUrl: "https://explorer.monad.xyz",
+  blockExplorerUrl: "https://testnet.monadexplorer.com",
 }
 ```
 
@@ -794,7 +794,7 @@ export function SmartTrading() {
         <div className="transaction-status">
           <p>交易状态: {status}</p>
           <a 
-            href={`https://explorer.monad.xyz/tx/${txHash}`}
+            href={`https://testnet.monadexplorer.com/tx/${txHash}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -860,5 +860,5 @@ export const CONTRACT_ADDRESSES = {
 4. 验证交易参数格式
 
 **合约部署网络**: Monad Testnet  
-**区块浏览器**: https://explorer.monad.xyz  
+**区块浏览器**: https://testnet.monadexplorer.com  
 **文档更新**: 2025-09-20

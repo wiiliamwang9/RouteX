@@ -1,13 +1,13 @@
 export const MONAD_CONFIG = {
   chainId: 10143,
-  rpcUrl: "https://testnet-rpc.monad.xyz",
+  rpcUrl: "https://testnet-rpc.monad.xyz/",
   chainName: "Monad Testnet",
   nativeCurrency: {
     name: "MON",
     symbol: "MON",
     decimals: 18,
   },
-  blockExplorerUrl: "https://explorer.monad.xyz",
+  blockExplorerUrl: "https://testnet.monadexplorer.com",
 }
 
 export const CONTRACT_ADDRESSES = {
