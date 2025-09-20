@@ -1,14 +1,41 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { useMarketData } from "@/hooks/use-market-data"
-import { formatPrice, formatVolume, formatPercentage } from "@/lib/data-providers"
+import { useAllTokenPrices } from "@/hooks/use-token-prices"
 import { formatDistanceToNow } from "date-fns"
 import { TrendingUp, TrendingDown, RefreshCw } from "lucide-react"
 import Image from "next/image"
 
+// 格式化价格显示
+const formatPrice = (price: number): string => {
+  if (price < 1) {
+    return price.toFixed(6)
+  }
+  return price.toFixed(2)
+}
+
+// 格式化交易量
+const formatVolume = (volume: number): string => {
+  if (volume >= 1e9) {
+    return `$${(volume / 1e9).toFixed(2)}B`
+  }
+  if (volume >= 1e6) {
+    return `$${(volume / 1e6).toFixed(2)}M`
+  }
+  if (volume >= 1e3) {
+    return `$${(volume / 1e3).toFixed(2)}K`
+  }
+  return `$${volume.toFixed(2)}`
+}
+
+// 格式化百分比变化
+const formatPercentage = (change: number): string => {
+  const sign = change >= 0 ? '+' : ''
+  return `${sign}${change.toFixed(2)}%`
+}
+
 export function MarketOverview() {
-  const { prices, isLoading, lastUpdated, refetch } = useMarketData()
+  const { prices, isLoading, lastUpdated, refetch } = useAllTokenPrices()
 
   if (isLoading && Object.keys(prices).length === 0) {
     return (
@@ -65,20 +92,27 @@ export function MarketOverview() {
               />
               <div>
                 <div className="font-semibold">{token.symbol}</div>
-                <div className="text-xs text-muted-foreground">{formatVolume(token.volume24h)} 24h vol</div>
+                <div className="text-xs text-muted-foreground">
+                  {formatVolume(token.volume24h)} 24h vol
+                  {token.source && (
+                    <span className="ml-2 px-1 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                      {token.source === 'external' ? 'API' : token.source === 'blockchain' ? '链上' : '计算'}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="text-right">
               <div className="font-mono font-semibold">${formatPrice(token.price)}</div>
               <div className="flex items-center gap-1">
-                {token.change24h >= 0 ? (
+                {token.priceChange24h >= 0 ? (
                   <TrendingUp className="h-3 w-3 text-green-500" />
                 ) : (
                   <TrendingDown className="h-3 w-3 text-red-500" />
                 )}
-                <span className={`text-xs font-mono ${token.change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {formatPercentage(token.change24h)}
+                <span className={`text-xs font-mono ${token.priceChange24h >= 0 ? "text-green-500" : "text-red-500"}`}>
+                  {formatPercentage(token.priceChange24h)}
                 </span>
               </div>
             </div>
