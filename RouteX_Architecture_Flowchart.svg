@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #34495e; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #2c3e50; }
+      .attack-box { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; }
+      .defense-box { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .core-box { fill: #f39c12; stroke: #e67e22; stroke-width: 2; }
+      .user-box { fill: #2ecc71; stroke: #27ae60; stroke-width: 2; }
+      .arrow { stroke: #34495e; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .flow-line { stroke: #7f8c8d; stroke-width: 1.5; fill: none; stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34495e" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="600" y="40" text-anchor="middle" class="title">RouteX 核心功能架构流程图</text>
+  <text x="600" y="65" text-anchor="middle" class="subtitle">基于 Monad 的量化基础设施工具</text>
+  
+  <!-- 用户层 -->
+  <rect x="50" y="100" width="200" height="80" rx="10" class="user-box"/>
+  <text x="150" y="125" text-anchor="middle" class="subtitle">量化交易者</text>
+  <text x="150" y="145" text-anchor="middle" class="text">• 专业交易员</text>
+  <text x="150" y="160" text-anchor="middle" class="text">• 算法交易策略</text>
+  <text x="150" y="175" text-anchor="middle" class="text">• 高频交易需求</text>
+  
+  <rect x="950" y="100" width="200" height="80" rx="10" class="user-box"/>
+  <text x="1050" y="125" text-anchor="middle" class="subtitle">普通用户/协议</text>
+  <text x="1050" y="145" text-anchor="middle" class="text">• DeFi 用户</text>
+  <text x="1050" y="160" text-anchor="middle" class="text">• 协议方</text>
+  <text x="1050" y="175" text-anchor="middle" class="text">• 安全交易需求</text>
+  
+  <!-- 交易端（进攻侧） -->
+  <rect x="50" y="250" width="500" height="200" rx="15" class="attack-box"/>
+  <text x="300" y="280" text-anchor="middle" class="subtitle" fill="white">交易端（进攻侧）</text>
+  <text x="300" y="300" text-anchor="middle" class="text" fill="white">为量化交易者提供高速、安全、低延迟的下单工具</text>
+  
+  <!-- 交易端子模块 -->
+  <rect x="70" y="320" width="140" height="60" rx="8" fill="#c0392b" stroke="#a93226" stroke-width="1"/>
+  <text x="140" y="340" text-anchor="middle" class="text" fill="white">高性能 SDK</text>
+  <text x="140" y="355" text-anchor="middle" class="text" fill="white">TypeScript/Python/Go</text>
+  <text x="140" y="370" text-anchor="middle" class="text" fill="white">低延迟接口</text>
+  
+  <rect x="230" y="320" width="140" height="60" rx="8" fill="#c0392b" stroke="#a93226" stroke-width="1"/>
+  <text x="300" y="340" text-anchor="middle" class="text" fill="white">AI 策略优化器</text>
+  <text x="300" y="355" text-anchor="middle" class="text" fill="white">智能决策</text>
+  <text x="300" y="370" text-anchor="middle" class="text" fill="white">风险管理</text>
+  
+  <rect x="390" y="320" width="140" height="60" rx="8" fill="#c0392b" stroke="#a93226" stroke-width="1"/>
+  <text x="460" y="340" text-anchor="middle" class="text" fill="white">数据分析引擎</text>
+  <text x="460" y="355" text-anchor="middle" class="text" fill="white">实时数据</text>
+  <text x="460" y="370" text-anchor="middle" class="text" fill="white">历史回测</text>
+  
+  <!-- 防护端（防御侧） -->
+  <rect x="650" y="250" width="500" height="200" rx="15" class="defense-box"/>
+  <text x="900" y="280" text-anchor="middle" class="subtitle" fill="white">防护端（防御侧）</text>
+  <text x="900" y="300" text-anchor="middle" class="text" fill="white">为普通用户和协议提供智能流动性路由、防止 MEV 和抢跑攻击</text>
+  
+  <!-- 防护端子模块 -->
+  <rect x="670" y="320" width="140" height="60" rx="8" fill="#2980b9" stroke="#1f618d" stroke-width="1"/>
+  <text x="740" y="340" text-anchor="middle" class="text" fill="white">智能流动性路由</text>
+  <text x="740" y="355" text-anchor="middle" class="text" fill="white">最优路径</text>
+  <text x="740" y="370" text-anchor="middle" class="text" fill="white">成本优化</text>
+  
+  <rect x="830" y="320" width="140" height="60" rx="8" fill="#2980b9" stroke="#1f618d" stroke-width="1"/>
+  <text x="900" y="340" text-anchor="middle" class="text" fill="white">MEV 防护</text>
+  <text x="900" y="355" text-anchor="middle" class="text" fill="white">抢跑保护</text>
+  <text x="900" y="370" text-anchor="middle" class="text" fill="white">私密交易</text>
+  
+  <rect x="990" y="320" width="140" height="60" rx="8" fill="#2980b9" stroke="#1f618d" stroke-width="1"/>
+  <text x="1060" y="340" text-anchor="middle" class="text" fill="white">协议安全</text>
+  <text x="1060" y="355" text-anchor="middle" class="text" fill="white">中间件服务</text>
+  <text x="1060" y="370" text-anchor="middle" class="text" fill="white">生态安全</text>
+  
+  <!-- 核心基础设施层 -->
+  <rect x="300" y="500" width="600" height="120" rx="15" class="core-box"/>
+  <text x="600" y="530" text-anchor="middle" class="subtitle" fill="white">Monad 核心基础设施</text>
+  <text x="600" y="550" text-anchor="middle" class="text" fill="white">原子性与可组合性 | 风险隔离 | 智能合约层</text>
+  
+  <!-- 核心基础设施子模块 -->
+  <rect x="320" y="570" width="120" height="40" rx="5" fill="#e67e22" stroke="#d35400" stroke-width="1"/>
+  <text x="380" y="585" text-anchor="middle" class="text" fill="white">智能合约</text>
+  <text x="380" y="600" text-anchor="middle" class="text" fill="white">Solidity</text>
+  
+  <rect x="460" y="570" width="120" height="40" rx="5" fill="#e67e22" stroke="#d35400" stroke-width="1"/>
+  <text x="520" y="585" text-anchor="middle" class="text" fill="white">跨链路由</text>
+  <text x="520" y="600" text-anchor="middle" class="text" fill="white">多链支持</text>
+  
+  <rect x="600" y="570" width="120" height="40" rx="5" fill="#e67e22" stroke="#d35400" stroke-width="1"/>
+  <text x="660" y="585" text-anchor="middle" class="text" fill="white">监控系统</text>
+  <text x="660" y="600" text-anchor="middle" class="text" fill="white">7x24 监控</text>
+  
+  <rect x="740" y="570" width="120" height="40" rx="5" fill="#e67e22" stroke="#d35400" stroke-width="1"/>
+  <text x="800" y="585" text-anchor="middle" class="text" fill="white">前端界面</text>
+  <text x="800" y="600" text-anchor="middle" class="text" fill="white">Next.js</text>
+  
+  <!-- 数据流箭头 -->
+  <!-- 用户到功能模块 -->
+  <line x1="150" y1="180" x2="300" y2="250" class="arrow"/>
+  <line x1="1050" y1="180" x2="900" y2="250" class="arrow"/>
+  
+  <!-- 功能模块到核心基础设施 -->
+  <line x1="300" y1="450" x2="500" y2="500" class="arrow"/>
+  <line x1="900" y1="450" x2="700" y2="500" class="arrow"/>
+  
+  <!-- 交易端和防护端之间的协作 -->
+  <line x1="550" y1="350" x2="650" y2="350" class="flow-line"/>
+  <text x="600" y="345" text-anchor="middle" class="text">数据共享</text>
+  
+  <!-- 底部说明 -->
+  <rect x="50" y="680" width="1100" height="80" rx="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+  <text x="600" y="705" text-anchor="middle" class="subtitle">核心优势</text>
+  <text x="200" y="725" text-anchor="middle" class="text">• 高性能：毫秒级响应</text>
+  <text x="400" y="725" text-anchor="middle" class="text">• 安全性：多层防护机制</text>
+  <text x="600" y="725" text-anchor="middle" class="text">• 可组合性：模块化设计</text>
+  <text x="800" y="725" text-anchor="middle" class="text">• 智能化：AI 驱动优化</text>
+  <text x="1000" y="725" text-anchor="middle" class="text">• 生态友好：协议级集成</text>
+  
+  <text x="200" y="745" text-anchor="middle" class="text">• 多语言 SDK 支持</text>
+  <text x="400" y="745" text-anchor="middle" class="text">• MEV 保护策略</text>
+  <text x="600" y="745" text-anchor="middle" class="text">• 原子性交易执行</text>
+  <text x="800" y="745" text-anchor="middle" class="text">• 实时监控告警</text>
+  <text x="1000" y="745" text-anchor="middle" class="text">• 跨链流动性聚合</text>
+</svg>
