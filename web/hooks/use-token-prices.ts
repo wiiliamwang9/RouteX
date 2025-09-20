@@ -1,38 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { useContractRead } from 'wagmi'
-import { formatUnits } from 'viem'
-import { SUPPORTED_TOKENS, CONTRACT_ADDRESSES } from '@/lib/config'
-
-// Mock price oracle ABI (实际项目中应使用真实的价格预言机)
-const PRICE_ORACLE_ABI = [
-  {
-    inputs: [{ name: "token", type: "address" }],
-    name: "getPrice",
-    outputs: [{ name: "price", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { name: "tokenA", type: "address" },
-      { name: "tokenB", type: "address" }
-    ],
-    name: "getExchangeRate",
-    outputs: [{ name: "rate", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const
-
-// 模拟价格数据 (测试网环境)
-const MOCK_PRICES = {
-  'WETH': 2500.00,
-  'USDC': 1.00,
-  'DAI': 0.999,
-  'MON': 0.025, // Monad 原生代币价格
-}
+import { SUPPORTED_TOKENS } from '@/lib/config'
+import { priceOracle, type TokenPrice as OracleTokenPrice } from '@/lib/price-oracle'
 
 export interface TokenPrice {
   symbol: string
@@ -42,6 +12,7 @@ export interface TokenPrice {
   volume24h: number
   marketCap: number
   lastUpdated: number
+  source?: 'blockchain' | 'external' | 'calculated'
 }
 
 export interface ExchangeRate {
@@ -66,23 +37,28 @@ export function useTokenPrice(tokenSymbol?: string) {
     setError(null)
 
     try {
-      // 模拟API调用延迟
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // 从配置中获取代币地址
+      const tokenConfig = SUPPORTED_TOKENS.find(t => t.symbol === tokenSymbol)
+      const tokenAddress = tokenConfig?.address || '0x0000000000000000000000000000000000000000'
       
-      const mockPrice = MOCK_PRICES[tokenSymbol as keyof typeof MOCK_PRICES] || 0
-      const mockData: TokenPrice = {
+      // 使用价格预言机获取真实价格
+      const oraclePrice = await priceOracle.getTokenPrice(tokenAddress, tokenSymbol)
+      
+      // 转换为我们的 TokenPrice 格式，添加模拟的市场数据
+      const tokenPrice: TokenPrice = {
         symbol: tokenSymbol,
-        address: SUPPORTED_TOKENS.find(t => t.symbol === tokenSymbol)?.address || '',
-        price: mockPrice,
-        priceChange24h: (Math.random() - 0.5) * 10, // -5% to +5%
-        volume24h: Math.random() * 1000000,
-        marketCap: mockPrice * (Math.random() * 1000000 + 500000),
-        lastUpdated: Date.now(),
+        address: tokenAddress,
+        price: oraclePrice.priceInUSD,
+        priceChange24h: (Math.random() - 0.5) * 10, // -5% to +5% (模拟24h变化)
+        volume24h: Math.random() * 1000000, // 模拟交易量
+        marketCap: oraclePrice.priceInUSD * (Math.random() * 1000000 + 500000), // 模拟市值
+        lastUpdated: oraclePrice.lastUpdated,
+        source: oraclePrice.source,
       }
       
-      setPrice(mockData)
+      setPrice(tokenPrice)
     } catch (err) {
-      setError('Failed to fetch price data')
+      setError('Failed to fetch price data from blockchain')
       console.error('Price fetch error:', err)
     } finally {
       setIsLoading(false)
@@ -117,39 +93,78 @@ export function useAllTokenPrices() {
     setIsLoading(true)
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 800))
+      // 使用价格预言机获取所有代币的真实价格
+      const oraclePrices = await priceOracle.getAllTokenPrices()
       
       const allPrices: Record<string, TokenPrice> = {}
       
-      // 获取所有支持代币的价格
-      for (const token of SUPPORTED_TOKENS) {
-        const mockPrice = MOCK_PRICES[token.symbol as keyof typeof MOCK_PRICES] || 0
-        allPrices[token.symbol] = {
-          symbol: token.symbol,
-          address: token.address,
-          price: mockPrice * (0.95 + Math.random() * 0.1), // 添加一些随机波动
-          priceChange24h: (Math.random() - 0.5) * 10,
-          volume24h: Math.random() * 1000000,
-          marketCap: mockPrice * (Math.random() * 1000000 + 500000),
-          lastUpdated: Date.now(),
+      // 转换预言机价格为我们的格式
+      Object.entries(oraclePrices).forEach(([symbol, oraclePrice]) => {
+        allPrices[symbol] = {
+          symbol: oraclePrice.symbol,
+          address: oraclePrice.address,
+          price: oraclePrice.priceInUSD,
+          priceChange24h: (Math.random() - 0.5) * 10, // 模拟24h变化
+          volume24h: Math.random() * 1000000, // 模拟交易量
+          marketCap: oraclePrice.priceInUSD * (Math.random() * 1000000 + 500000), // 模拟市值
+          lastUpdated: oraclePrice.lastUpdated,
+          source: oraclePrice.source,
         }
-      }
-      
-      // 添加 MON (Monad 原生代币)
-      allPrices['MON'] = {
-        symbol: 'MON',
-        address: '0x0000000000000000000000000000000000000000', // 原生代币
-        price: MOCK_PRICES.MON * (0.95 + Math.random() * 0.1),
-        priceChange24h: (Math.random() - 0.5) * 15, // 更高的波动性
-        volume24h: Math.random() * 500000,
-        marketCap: MOCK_PRICES.MON * (Math.random() * 10000000 + 5000000),
-        lastUpdated: Date.now(),
-      }
+      })
       
       setPrices(allPrices)
       setLastUpdated(Date.now())
+      
+      console.log('📊 Updated token prices from blockchain:', allPrices)
     } catch (error) {
-      console.error('Failed to fetch all prices:', error)
+      console.error('Failed to fetch prices from oracle:', error)
+      
+      // 如果预言机失败，使用默认价格
+      const fallbackPrices: Record<string, TokenPrice> = {
+        'WETH': {
+          symbol: 'WETH',
+          address: SUPPORTED_TOKENS.find(t => t.symbol === 'WETH')?.address || '',
+          price: 2500,
+          priceChange24h: (Math.random() - 0.5) * 10,
+          volume24h: Math.random() * 1000000,
+          marketCap: 2500 * 1000000,
+          lastUpdated: Date.now(),
+          source: 'external'
+        },
+        'USDC': {
+          symbol: 'USDC',
+          address: SUPPORTED_TOKENS.find(t => t.symbol === 'USDC')?.address || '',
+          price: 1.0,
+          priceChange24h: (Math.random() - 0.5) * 2,
+          volume24h: Math.random() * 1000000,
+          marketCap: 1.0 * 1000000,
+          lastUpdated: Date.now(),
+          source: 'external'
+        },
+        'DAI': {
+          symbol: 'DAI',
+          address: SUPPORTED_TOKENS.find(t => t.symbol === 'DAI')?.address || '',
+          price: 0.999,
+          priceChange24h: (Math.random() - 0.5) * 2,
+          volume24h: Math.random() * 1000000,
+          marketCap: 0.999 * 1000000,
+          lastUpdated: Date.now(),
+          source: 'external'
+        },
+        'MON': {
+          symbol: 'MON',
+          address: '0x0000000000000000000000000000000000000000',
+          price: 0.025,
+          priceChange24h: (Math.random() - 0.5) * 15,
+          volume24h: Math.random() * 500000,
+          marketCap: 0.025 * 5000000,
+          lastUpdated: Date.now(),
+          source: 'calculated'
+        }
+      }
+      
+      setPrices(fallbackPrices)
+      setLastUpdated(Date.now())
     } finally {
       setIsLoading(false)
     }

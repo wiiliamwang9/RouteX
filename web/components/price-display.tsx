@@ -24,12 +24,13 @@ function PriceChangeIndicator({ change, className = "" }: { change: number; clas
 }
 
 // 单个代币价格卡片
-function TokenPriceCard({ symbol, price, change, volume, marketCap }: {
+function TokenPriceCard({ symbol, price, change, volume, marketCap, source }: {
   symbol: string
   price: number
   change: number
   volume: number
   marketCap: number
+  source?: 'blockchain' | 'external' | 'calculated'
 }) {
   const formattedPrice = price.toLocaleString('en-US', {
     style: 'currency',
@@ -41,11 +42,27 @@ function TokenPriceCard({ symbol, price, change, volume, marketCap }: {
   const formattedVolume = (volume / 1000000).toFixed(2) + 'M'
   const formattedMarketCap = (marketCap / 1000000).toFixed(1) + 'M'
 
+  const getSourceBadge = () => {
+    switch (source) {
+      case 'blockchain':
+        return <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">链上</span>
+      case 'external':
+        return <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">外部API</span>
+      case 'calculated':
+        return <span className="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded">计算</span>
+      default:
+        return null
+    }
+  }
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold">{symbol}</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-lg font-bold">{symbol}</CardTitle>
+            {getSourceBadge()}
+          </div>
           <PriceChangeIndicator change={change} />
         </div>
       </CardHeader>
@@ -244,6 +261,7 @@ export function PriceDisplay() {
                   change={tokenPrice.priceChange24h}
                   volume={tokenPrice.volume24h}
                   marketCap={tokenPrice.marketCap}
+                  source={tokenPrice.source}
                 />
               ))}
             </div>
