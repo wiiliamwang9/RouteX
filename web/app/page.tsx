@@ -13,7 +13,6 @@ import { MarketOverview } from "@/components/market-overview"
 import { LiquidityPools } from "@/components/liquidity-pools"
 import { NetworkStatus } from "@/components/network-status"
 import { PriceDisplay } from "@/components/price-display"
-import { TestingDashboard } from "@/components/testing-dashboard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   LayoutDashboard,
@@ -23,7 +22,6 @@ import {
   Bell,
   AreaChart,
   DollarSign,
-  TestTube,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -80,10 +78,6 @@ export default function HomePage() {
               <TabsTrigger value="protection" className={triggerClasses}>
                 <Shield className="h-4 w-4" />
                 Protection
-              </TabsTrigger>
-              <TabsTrigger value="testing" className={triggerClasses}>
-                <TestTube className="h-4 w-4" />
-                Testing
               </TabsTrigger>
             </TabsList>
           </div>
@@ -234,9 +228,6 @@ export default function HomePage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="testing">
-          <TestingDashboard />
-        </TabsContent>
       </main>
     </Tabs>
   )
