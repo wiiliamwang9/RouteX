@@ -10,6 +10,7 @@ import { ProtectionDashboard } from "@/components/protection-dashboard"
 import { MarketOverview } from "@/components/market-overview"
 import { LiquidityPools } from "@/components/liquidity-pools"
 import { NetworkStatus } from "@/components/network-status"
+import { PriceDisplay } from "@/components/price-display"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   LayoutDashboard,
@@ -18,6 +19,7 @@ import {
   Shield,
   Bell,
   AreaChart,
+  DollarSign,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -52,6 +54,10 @@ export default function HomePage() {
               <TabsTrigger value="swap" className={triggerClasses}>
                 <TrendingUp className="h-4 w-4" />
                 Swap
+              </TabsTrigger>
+              <TabsTrigger value="prices" className={triggerClasses}>
+                <DollarSign className="h-4 w-4" />
+                Prices
               </TabsTrigger>
               <TabsTrigger value="orders" className={triggerClasses}>
                 <BarChart3 className="h-4 w-4" />
@@ -132,6 +138,10 @@ export default function HomePage() {
 
         <TabsContent value="swap">
           <SwapInterface />
+        </TabsContent>
+
+        <TabsContent value="prices">
+          <PriceDisplay />
         </TabsContent>
 
         <TabsContent value="orders">
