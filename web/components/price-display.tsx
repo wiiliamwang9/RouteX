@@ -1,45 +1,80 @@
-"use client"
+'use client';
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { RefreshCw, TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react'
-import { useAllTokenPrices, useExchangeRate, usePriceHistory } from '@/hooks/use-token-prices'
+import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import {
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  BarChart3,
+} from 'lucide-react';
+import {
+  useAllTokenPrices,
+  useExchangeRate,
+  usePriceHistory,
+} from '@/hooks/use-token-prices';
 
 // 价格变化指示器组件
-function PriceChangeIndicator({ change, className = "" }: { change: number; className?: string }) {
-  const isPositive = change >= 0
-  const Icon = isPositive ? TrendingUp : TrendingDown
-  
+function PriceChangeIndicator({
+  change,
+  className = '',
+}: {
+  change: number;
+  className?: string;
+}) {
+  const isPositive = change >= 0;
+  const Icon = isPositive ? TrendingUp : TrendingDown;
+
   return (
     <div className={`flex items-center gap-1 ${className}`}>
-      <Icon className={`w-4 h-4 ${isPositive ? 'text-green-500' : 'text-red-500'}`} />
-      <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-        {isPositive ? '+' : ''}{change.toFixed(2)}%
+      <Icon
+        className={`w-4 h-4 ${isPositive ? 'text-green-500' : 'text-red-500'}`}
+      />
+      <span
+        className={`text-sm font-medium ${
+          isPositive ? 'text-green-500' : 'text-red-500'
+        }`}
+      >
+        {isPositive ? '+' : ''}
+        {change.toFixed(2)}%
       </span>
     </div>
-  )
+  );
 }
 
 // 单个代币价格卡片
-function TokenPriceCard({ symbol, price, change, volume, marketCap }: {
-  symbol: string
-  price: number
-  change: number
-  volume: number
-  marketCap: number
+function TokenPriceCard({
+  symbol,
+  price,
+  change,
+  volume,
+  marketCap,
+}: {
+  symbol: string;
+  price: number;
+  change: number;
+  volume: number;
+  marketCap: number;
 }) {
   const formattedPrice = price.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: price < 1 ? 6 : 2,
     maximumFractionDigits: price < 1 ? 6 : 2,
-  })
+  });
 
-  const formattedVolume = (volume / 1000000).toFixed(2) + 'M'
-  const formattedMarketCap = (marketCap / 1000000).toFixed(1) + 'M'
+  const formattedVolume = (volume / 1000000).toFixed(2) + 'M';
+  const formattedMarketCap = (marketCap / 1000000).toFixed(1) + 'M';
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -65,53 +100,66 @@ function TokenPriceCard({ symbol, price, change, volume, marketCap }: {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // 汇率展示组件
 function ExchangeRateDisplay() {
-  const [selectedPair, setSelectedPair] = useState<{ from: string; to: string }>({
+  const [selectedPair, setSelectedPair] = useState<{
+    from: string;
+    to: string;
+  }>({
     from: 'WETH',
-    to: 'USDC'
-  })
-  
-  const { exchangeRate } = useExchangeRate(selectedPair.from, selectedPair.to)
-  const tokens = ['WETH', 'USDC', 'DAI', 'MON']
+    to: 'USDC',
+  });
+
+  const { exchangeRate } = useExchangeRate(selectedPair.from, selectedPair.to);
+  const tokens = ['WETH', 'USDC', 'DAI', 'MON'];
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5" />
-          汇率转换
+          exchange rate conversion
         </CardTitle>
-        <CardDescription>实时代币汇率计算</CardDescription>
+        <CardDescription>
+          Real-time currency exchange rate calculation
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {/* 代币对选择 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">从</label>
+              <label className="block text-sm font-medium mb-2">from</label>
               <select
                 value={selectedPair.from}
-                onChange={(e) => setSelectedPair(prev => ({ ...prev, from: e.target.value }))}
+                onChange={(e) =>
+                  setSelectedPair((prev) => ({ ...prev, from: e.target.value }))
+                }
                 className="w-full p-2 border rounded-md"
               >
-                {tokens.map(token => (
-                  <option key={token} value={token}>{token}</option>
+                {tokens.map((token) => (
+                  <option key={token} value={token}>
+                    {token}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">到</label>
+              <label className="block text-sm font-medium mb-2">to</label>
               <select
                 value={selectedPair.to}
-                onChange={(e) => setSelectedPair(prev => ({ ...prev, to: e.target.value }))}
+                onChange={(e) =>
+                  setSelectedPair((prev) => ({ ...prev, to: e.target.value }))
+                }
                 className="w-full p-2 border rounded-md"
               >
-                {tokens.map(token => (
-                  <option key={token} value={token}>{token}</option>
+                {tokens.map((token) => (
+                  <option key={token} value={token}>
+                    {token}
+                  </option>
                 ))}
               </select>
             </div>
@@ -122,13 +170,17 @@ function ExchangeRateDisplay() {
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-sm text-gray-600">1 {exchangeRate.from} =</div>
+                  <div className="text-sm text-gray-600">
+                    1 {exchangeRate.from} =
+                  </div>
                   <div className="text-xl font-bold">
                     {exchangeRate.rate.toFixed(6)} {exchangeRate.to}
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600">1 {exchangeRate.to} =</div>
+                  <div className="text-sm text-gray-600">
+                    1 {exchangeRate.to} =
+                  </div>
                   <div className="text-xl font-bold">
                     {exchangeRate.inverseRate.toFixed(6)} {exchangeRate.from}
                   </div>
@@ -139,18 +191,18 @@ function ExchangeRateDisplay() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // 价格历史图表 (简化版)
 function PriceChart({ symbol }: { symbol: string }) {
-  const { history } = usePriceHistory(symbol, '24h')
-  
-  if (history.length === 0) return null
+  const { history } = usePriceHistory(symbol, '24h');
 
-  const minPrice = Math.min(...history.map(p => p.price))
-  const maxPrice = Math.max(...history.map(p => p.price))
-  const priceRange = maxPrice - minPrice
+  if (history.length === 0) return null;
+
+  const minPrice = Math.min(...history.map((p) => p.price));
+  const maxPrice = Math.max(...history.map((p) => p.price));
+  const priceRange = maxPrice - minPrice;
 
   return (
     <div className="h-32 w-full relative">
@@ -159,29 +211,33 @@ function PriceChart({ symbol }: { symbol: string }) {
           fill="none"
           stroke="#3b82f6"
           strokeWidth="2"
-          points={history.map((point, index) => {
-            const x = (index / (history.length - 1)) * 100
-            const y = 100 - ((point.price - minPrice) / priceRange) * 100
-            return `${x},${y}`
-          }).join(' ')}
+          points={history
+            .map((point, index) => {
+              const x = (index / (history.length - 1)) * 100;
+              const y = 100 - ((point.price - minPrice) / priceRange) * 100;
+              return `${x},${y}`;
+            })
+            .join(' ')}
         />
       </svg>
     </div>
-  )
+  );
 }
 
 // 主要价格展示组件
 export function PriceDisplay() {
-  const { prices, isLoading, lastUpdated, refetch } = useAllTokenPrices()
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'1h' | '24h' | '7d'>('24h')
+  const { prices, isLoading, lastUpdated, refetch } = useAllTokenPrices();
+  const [selectedTimeframe, setSelectedTimeframe] = useState<
+    '1h' | '24h' | '7d'
+  >('24h');
 
   const handleRefresh = () => {
-    refetch()
-  }
+    refetch();
+  };
 
-  const lastUpdatedText = lastUpdated 
+  const lastUpdatedText = lastUpdated
     ? new Date(lastUpdated).toLocaleTimeString()
-    : '未更新'
+    : '未更新';
 
   return (
     <div className="space-y-6">
@@ -202,7 +258,9 @@ export function PriceDisplay() {
             disabled={isLoading}
             className="flex items-center gap-2"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+            />
             刷新
           </Button>
         </div>
@@ -210,9 +268,9 @@ export function PriceDisplay() {
 
       <Tabs defaultValue="prices" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="prices">价格总览</TabsTrigger>
-          <TabsTrigger value="rates">汇率转换</TabsTrigger>
-          <TabsTrigger value="charts">价格图表</TabsTrigger>
+          <TabsTrigger value="prices">price overview</TabsTrigger>
+          <TabsTrigger value="rates">exchange rate conversion</TabsTrigger>
+          <TabsTrigger value="charts">price chart</TabsTrigger>
         </TabsList>
 
         {/* 价格总览 */}
@@ -261,7 +319,9 @@ export function PriceDisplay() {
             {(['1h', '24h', '7d'] as const).map((timeframe) => (
               <Button
                 key={timeframe}
-                variant={selectedTimeframe === timeframe ? 'default' : 'outline'}
+                variant={
+                  selectedTimeframe === timeframe ? 'default' : 'outline'
+                }
                 size="sm"
                 onClick={() => setSelectedTimeframe(timeframe)}
               >
@@ -269,7 +329,7 @@ export function PriceDisplay() {
               </Button>
             ))}
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Object.keys(prices).map((symbol) => (
               <Card key={symbol}>
@@ -290,5 +350,5 @@ export function PriceDisplay() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
