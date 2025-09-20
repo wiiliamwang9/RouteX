@@ -1,7 +1,7 @@
 export const MONAD_CONFIG = {
   // TODO: Replace with actual Monad chain configuration
-  chainId: 34443, // Placeholder - replace with actual Monad chainId
-  rpcUrl: "https://rpc.monad.xyz", // Placeholder - replace with actual Monad RPC URL
+  chainId: 10143, // Placeholder - replace with actual Monad chainId
+  rpcUrl: "https://testnet-rpc.monad.xyz",
   chainName: "Monad",
   nativeCurrency: {
     name: "MON",
